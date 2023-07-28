@@ -1,9 +1,12 @@
 const express = require('express')
+const { dbConnection } = require('./database/config')
 require('dotenv').config()
 
 const port = process.env.PORT
 
 const app = express()
+
+dbConnection()
 
 app.use( express.static('public'))
 
