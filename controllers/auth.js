@@ -1,6 +1,7 @@
 const { response } = require('express')
 const User = require('../models/User')
 const bcrypt = require('bcryptjs')
+const { generateJWT } = require('../helpers/jwt')
 
 const createUser = async(req, res = response) => {
 
@@ -9,7 +10,6 @@ const createUser = async(req, res = response) => {
     const { email, password } = req.body
 
     let user = await User.findOne(({email}))
-    console.log(user)
 
     if(user) {
       return res.status(400).json({
@@ -27,10 +27,13 @@ const createUser = async(req, res = response) => {
 
     await user.save()
 
+    const token = await generateJWT(user.id, user.name)
+
     res.status(201).json({
       ok: true,
       uid: user.id,
-      name: user.name
+      name: user.name,
+      token
     })
   } catch (error) {
     res.status(500).json({
@@ -41,16 +44,49 @@ const createUser = async(req, res = response) => {
   }
 }
 
-const login = (req, res = response) => {
+const login = async(req, res = response) => {
 
-  const { email, password } = req.body
+  try {
+    
+    const { email, password } = req.body
 
-  res.json({
-    ok: true,
-    msg: "login",
-    email,
-    password
-  })
+    const user = await User.findOne(({ email }))
+
+    if(!user) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'Usuario no registrado'
+      })
+    }
+
+    // Confirm password
+    const validPassword = bcrypt.compareSync( password, user.password)
+
+    if(!validPassword) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Contraseña incorrecta"
+      })
+    }
+
+    // Generar JWT
+    const token = await generateJWT(user.id, user.name)
+
+    res.json({
+      ok: true,
+      uid: user.id,
+      name: user.name,
+      token
+    })
+
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      msg: "Error 500 internal server error"
+    })
+    console.log(error)
+  }
+
 }
 
 module.exports = {
