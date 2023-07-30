@@ -15,6 +15,8 @@ app.use( express.json() )
 
 app.use('/api/auth', require('./routes/auth'))
 
+app.use('/projects', require('./routes/project'))
+
 
 app.listen(port, () => {
   console.log('Servidor corriendo ' + port)
