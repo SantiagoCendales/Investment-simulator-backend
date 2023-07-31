@@ -1,7 +1,9 @@
 const { response } = require('express')
 const User = require('../models/User')
 const bcrypt = require('bcryptjs')
+const crypto = require('crypto')
 const { generateJWT } = require('../helpers/jwt')
+const sentVerificationEmail = require('../services/mail')
 
 const createUser = async(req, res = response) => {
 
@@ -24,10 +26,13 @@ const createUser = async(req, res = response) => {
     // Password encrypt
     const salt = bcrypt.genSaltSync()
     user.password = bcrypt.hashSync(password, salt)
+    user.verificationToken = crypto.randomBytes(32).toString('hex')
 
     await user.save()
 
     const token = await generateJWT(user.id, user.name)
+    
+    await sentVerificationEmail(user.email, user.verificationToken, req.body.investmentAmount)
 
     res.status(201).json({
       ok: true,
@@ -89,7 +94,33 @@ const login = async(req, res = response) => {
 
 }
 
+const verifyEmail = async(req, res) => {
+  try {
+    const user = await User.findOne({verificationToken: req.params.token})
+
+    if(!user) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'Link inválido'
+      })
+    }
+
+    await User.updateOne({verificationToken: user.verificationToken, emailVerified: true})
+
+    
+
+    res.status(200).json({
+      ok: true,
+      msg: "Verificación exitosa"
+    })
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 module.exports = {
   createUser,
-  login
+  login,
+  verifyEmail
 }

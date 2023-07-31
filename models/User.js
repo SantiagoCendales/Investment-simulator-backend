@@ -13,6 +13,15 @@ const UserSchema = Schema({
   password: {
     type: String,
     require: true
+  },
+  emailVerified: {
+    type: Boolean,
+    require: true,
+    default: false
+  },
+  verificationToken: {
+    type: String,
+    require: false
   }
 })
 
