@@ -1,5 +1,6 @@
 const express = require('express')
 const { dbConnection } = require('./database/config')
+const cors = require('cors')
 require('dotenv').config()
 
 const port = process.env.PORT
@@ -7,6 +8,8 @@ const port = process.env.PORT
 const app = express()
 
 dbConnection()
+
+app.use(cors())
 
 app.use( express.static('public'))
 
@@ -19,5 +22,5 @@ app.use('/projects', require('./routes/project'))
 
 
 app.listen(port, () => {
-  console.log('Servidor corriendo ' + port)
+  console.log('Server run on port: ' + port)
 })
