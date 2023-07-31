@@ -5,10 +5,22 @@ const ProjectSchema = Schema({
     type: String,
     require: true
   },
-  profitability: {
+  returnPerYear: {
     type: Number,
-    require: true,
+    require: true
   },
+  appreciationPerYear: {
+    type: Number,
+    require: true
+  },
+  unitPrice: {
+    type: Number,
+    require: true
+  },
+  profitability: {
+    type: Array,
+    required: false
+  }
 })
 
 module.exports = model('Project', ProjectSchema)

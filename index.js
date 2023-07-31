@@ -20,6 +20,7 @@ app.use('/api/auth', require('./routes/auth'))
 
 app.use('/projects', require('./routes/project'))
 
+app.use('/simulate', require('./routes/simulation'))
 
 app.listen(port, () => {
   console.log('Server run on port: ' + port)

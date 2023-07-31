@@ -9,8 +9,11 @@ router.post(
   '/register',
   [
     check('name', 'El nombre es requerido').not().isEmpty(),
+    check('lastName', 'El apellido es requerido').not().isEmpty(),
     check('email', 'El email es requerido').isEmail(),
+    check('phone', 'El teléfono es requerido').not().isEmpty(),
     check('password', 'El password es requerido').not().isEmpty(),
+    check('acceptTermsAndConditions', 'Debes aceptar los términos y condiciones').not().isEmpty(),
     check('investmentAmount').optional(),
     fieldValidator
   ], //middleware
