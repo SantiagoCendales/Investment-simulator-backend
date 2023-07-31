@@ -5,4 +5,6 @@ Aplicación que permite calcular el retorno de tu inversion.
 
 ## Development server
 
-Run `npm run dev` for a dev server. Exposed to `http://localhost:4000/`. The app will automatically reload if you change any of the source files.
+Ejecutar `npm run dev` para levantar el servidor de desarrollo. Corre en `http://localhost:4000/`.
+
+Se deben definir las variables de entorno para la conexión con la base de datos
